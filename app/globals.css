@@ -1,26 +1,148 @@
-@import "tailwindcss";
-
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  min-height: 100vh;
+  direction: rtl;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+  
+  display: flex;
+  flex-direction: column;
+}
+
+
+/* هدر */
+.header {
+  background: rgba(255, 255, 255, 0.95);
+  padding: 1rem 2rem;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+  margin-bottom: 30px;
+}
+
+/* محتوای اصلی */
+main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start; /* تغییر از center به flex-start */
+  padding-top: 0; /* حذف padding اضافه */
+}
+
+.games-menu {
+  text-align: center;
+  color: white;
+  margin-top: 0; /* حذف margin اضافه */
+}
+
+.games-menu h1 {
+  font-size: 2.5rem;
+  margin-bottom: 2rem;
+  text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+}
+
+.games-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 20px;
+  margin-top: 40px;
+}
+
+.game-card {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  padding: 50px 20px;
+  border-radius: 20px;
+  font-size: 1.5rem;
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+}
+
+.game-card:hover {
+  transform: translateY(-8px) scale(1.02);
+  box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+}
+
+/* کراس‌ورد - آبی */
+.game-card:nth-child(1) {
+  background: linear-gradient(135deg, #3498db, #2980b9);
+}
+
+/* چلنج - قرمز */
+.game-card:nth-child(2) {
+  background: linear-gradient(135deg, #e74c3c, #c0392b);
+}
+
+/* مموری‌کارت - بنفش */
+.game-card:nth-child(3) {
+  background: linear-gradient(135deg, #9b59b6, #8e44ad);
+}
+
+
+
+
+.game-container {
+  background: white;
+  border-radius: 15px;
+  padding: 20px;
+  margin-top: 20px;
+}
+
+.back-button {
+  background: #ff6b6b;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-bottom: 20px;
+}
+
+.back-button:hover {
+  background: #e74c3c;
+}
+
+/* استایل‌های منو و امتیاز */
+.menu-container, .score-container {
+  text-align: center;
+  padding: 40px;
+}
+
+.menu-container h2, .score-container h2 {
+  color: #2c3e50;
+  margin-bottom: 20px;
+}
+
+.menu-container button, .score-container button {
+  background: #3498db;
+  color: white;
+  border: none;
+  padding: 15px 30px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 1.1rem;
+  margin: 10px;
+}
+
+.menu-container button:hover, .score-container button:hover {
+  background: #2980b9;
+}
+
+.score {
+  font-size: 3rem;
+  font-weight: bold;
+  color: #e74c3c;
+  margin: 20px 0;
 }

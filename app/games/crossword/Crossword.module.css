@@ -1,0 +1,26 @@
+.container {
+  text-align: center;
+  padding: 20px;
+}
+
+.gameBoard {
+  background: white;
+  padding: 30px;
+  border-radius: 15px;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+  margin: 20px 0;
+}
+
+.gameBoard button {
+  background: #3498db;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-top: 20px;
+}
+
+.gameBoard button:hover {
+  background: #2980b9;
+}
