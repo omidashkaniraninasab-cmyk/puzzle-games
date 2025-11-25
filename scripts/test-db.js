@@ -1,14 +1,16 @@
 import { testConnection } from '../lib/database.js';
 
-async function test() {
-  console.log('🧪 Testing database connection...');
+async function main() {
+  console.log('🔗 Testing database connection...');
+  console.log('DATABASE_URL:', process.env.DATABASE_URL ? '✅ Set' : '❌ Not set');
+  
   const connected = await testConnection();
   if (connected) {
-    console.log('✅ Database connection successful!');
+    console.log('🎉 Database is ready!');
   } else {
-    console.log('❌ Database connection failed!');
+    console.log('❌ Database connection failed');
   }
   process.exit(connected ? 0 : 1);
 }
 
-test();
+main().catch(console.error);
