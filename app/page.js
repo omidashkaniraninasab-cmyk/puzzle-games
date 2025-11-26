@@ -1,25 +1,27 @@
 'use client';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Header from './components/Header/Header';
-import Footer from './components/Footer/Footer';
-// import Footer from './components/Footer/Footer'; // موقتاً کامنت کنید
-import CrosswordGame from './games/crossword/CrosswordGame';
-import ChallengeGame from './games/challenge/ChallengeGame';
-import MemoryCardGame from './games/memorycard/MemoryCardGame';
+import LoginModal from './components/Auth/LoginModal';
+import RegisterModal from './components/Auth/RegisterModal';
 
 export default function Home() {
   const [activeGame, setActiveGame] = useState(null);
+  const [showLoginModal, setShowLoginModal] = useState(false);
+  const [showRegisterModal, setShowRegisterModal] = useState(false);
 
   const games = [
-    { id: 'crossword', name: 'کراس‌ورد', component: CrosswordGame },
-    { id: 'challenge', name: 'چلنج', component: ChallengeGame },
-    { id: 'memorycard', name: 'مموری‌کارت', component: MemoryCardGame }
+    { id: 'crossword', name: 'کراس‌ورد' },
+    { id: 'challenge', name: 'چلنج' },
+    { id: 'memorycard', name: 'مموری‌کارت' }
   ];
 
-  const renderGame = () => {
-    const GameComponent = games.find(game => game.id === activeGame)?.component;
-    return GameComponent ? <GameComponent /> : null;
-  };
+  //全局 functions برای modalها
+  useEffect(() => {
+    window.showAuthModal = (type) => {
+      if (type === 'login') setShowLoginModal(true);
+      if (type === 'register') setShowRegisterModal(true);
+    };
+  }, []);
 
   return (
     <div className="container">
@@ -49,12 +51,22 @@ export default function Home() {
             >
               بازگشت به منوی اصلی
             </button>
-            {renderGame()}
+            <div className="game-content">
+              {/* محتوای بازی اینجا لود می‌شود */}
+              <h2>بازی {games.find(g => g.id === activeGame)?.name}</h2>
+              <p>این بازی به زودی اضافه خواهد شد</p>
+            </div>
           </div>
         )}
       </main>
 
-        <Footer />
+      {/* Modalهای احراز هویت */}
+      {showLoginModal && (
+        <LoginModal onClose={() => setShowLoginModal(false)} />
+      )}
+      {showRegisterModal && (
+        <RegisterModal onClose={() => setShowRegisterModal(false)} />
+      )}
     </div>
   );
 }
