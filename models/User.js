@@ -2,7 +2,8 @@ import { DataTypes } from 'sequelize';
 import sequelize from '../lib/database.js';
 import bcrypt from 'bcryptjs';
 
-const User = sequelize.define('User', {
+// اگر sequelize null است، مدل تعریف نکن
+const User = sequelize ? sequelize.define('User', {
   id: {
     type: DataTypes.UUID,
     defaultValue: DataTypes.UUIDV4,
@@ -11,32 +12,20 @@ const User = sequelize.define('User', {
   username: {
     type: DataTypes.STRING(50),
     allowNull: false,
-    unique: true,
-    validate: {
-      len: [3, 50]
-    }
+    unique: true
   },
   email: {
     type: DataTypes.STRING(100),
     allowNull: false,
-    unique: true,
-    validate: {
-      isEmail: true
-    }
+    unique: true
   },
   password: {
     type: DataTypes.STRING(255),
-    allowNull: false,
-    validate: {
-      len: [8, 100]
-    }
+    allowNull: false
   },
   displayName: {
     type: DataTypes.STRING(100),
-    allowNull: false,
-    validate: {
-      len: [2, 100]
-    }
+    allowNull: false
   },
   totalScore: {
     type: DataTypes.BIGINT,
@@ -45,14 +34,6 @@ const User = sequelize.define('User', {
   rank: {
     type: DataTypes.INTEGER,
     defaultValue: 0
-  },
-  createdAt: {
-    type: DataTypes.DATE,
-    defaultValue: DataTypes.NOW
-  },
-  updatedAt: {
-    type: DataTypes.DATE,
-    defaultValue: DataTypes.NOW
   }
 }, {
   tableName: 'users',
@@ -64,11 +45,13 @@ const User = sequelize.define('User', {
       }
     }
   }
-});
+}) : null;
 
-// متد مقایسه رمز عبور
-User.prototype.comparePassword = async function(candidatePassword) {
-  return await bcrypt.compare(candidatePassword, this.password);
-};
+// فقط اگر مدل وجود دارد متدها را اضافه کن
+if (User) {
+  User.prototype.comparePassword = async function(candidatePassword) {
+    return await bcrypt.compare(candidatePassword, this.password);
+  };
+}
 
 export default User;
