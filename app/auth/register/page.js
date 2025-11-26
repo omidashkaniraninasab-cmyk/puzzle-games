@@ -73,12 +73,13 @@ export default function RegisterPage() {
           <div className="form-group">
             <label>رمز عبور:</label>
             <input
-              type="password"
-              value={formData.password}
-              onChange={(e) => setFormData({...formData, password: e.target.value})}
-              required
-              minLength="8"
-            />
+  type="password"
+  value={formData.password}
+  onChange={(e) => setFormData({...formData, password: e.target.value})}
+  required
+  minLength="8"
+  autoComplete="new-password" // این خط را اضافه کنید
+/>
           </div>
 
           <button type="submit" disabled={loading}>
