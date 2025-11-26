@@ -1,20 +1,62 @@
 import { NextResponse } from 'next/server';
+import { verifyToken } from '@/lib/auth/jwt';
+
+async function getUserModel() {
+  const { User } = await import('@/models/index.js');
+  return User;
+}
 
 export async function GET(request) {
   try {
-    console.log('👤 Me endpoint called');
+    const token = request.cookies.get('token')?.value;
     
-    // فعلاً کاربر null برمی‌گردانیم
-    return NextResponse.json({ 
-      user: null,
-      message: 'Endpoint is working'
+    if (!token) {
+      return NextResponse.json({ user: null });
+    }
+
+    // بررسی توکن
+    const decoded = verifyToken(token);
+    
+    const User = await getUserModel();
+    
+    // پیدا کردن کاربر از دیتابیس
+    const user = await User.findByPk(decoded.userId, {
+      attributes: { exclude: ['password'] } // رمز عبور را برنگردان
+    });
+
+    if (!user) {
+      // اگر کاربر پیدا نشد، cookie را پاک کن
+      const response = NextResponse.json({ user: null });
+      response.cookies.set('token', '', {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'strict',
+        maxAge: 0
+      });
+      return response;
+    }
+
+    return NextResponse.json({
+      user: {
+        id: user.id,
+        username: user.username,
+        displayName: user.displayName,
+        email: user.email,
+        totalScore: user.totalScore,
+        rank: user.rank
+      }
     });
 
   } catch (error) {
-    console.error('❌ Me error:', error);
-    return NextResponse.json(
-      { user: null, error: error.message },
-      { status: 500 }
-    );
+    console.error('❌ خطای Me:', error);
+    // اگر توکن نامعتبر است، cookie را پاک کن
+    const response = NextResponse.json({ user: null });
+    response.cookies.set('token', '', {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'strict',
+      maxAge: 0
+    });
+    return response;
   }
 }

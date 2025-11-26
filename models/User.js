@@ -1,14 +1,8 @@
 import { DataTypes } from 'sequelize';
+import sequelize from '../lib/database.js';
 import bcrypt from 'bcryptjs';
 
-// تابع برای گرفتن sequelize instance
-let sequelize;
-
-export function setSequelize(seq) {
-  sequelize = seq;
-}
-
-const User = sequelize ? sequelize.define('User', {
+const User = sequelize.define('User', {
   id: {
     type: DataTypes.UUID,
     defaultValue: DataTypes.UUIDV4,
@@ -19,8 +13,7 @@ const User = sequelize ? sequelize.define('User', {
     allowNull: false,
     unique: true,
     validate: {
-      len: [3, 50],
-      is: /^[a-zA-Z0-9_]+$/
+      len: [3, 50]
     }
   },
   email: {
@@ -45,29 +38,21 @@ const User = sequelize ? sequelize.define('User', {
       len: [2, 100]
     }
   },
-  avatar: {
-    type: DataTypes.STRING(255),
-    allowNull: true
+  totalScore: {
+    type: DataTypes.BIGINT,
+    defaultValue: 0
   },
-  isVerified: {
-    type: DataTypes.BOOLEAN,
-    defaultValue: false
-  },
-  role: {
-    type: DataTypes.ENUM('user', 'admin'),
-    defaultValue: 'user'
-  },
-  lastLogin: {
-    type: DataTypes.DATE,
-    allowNull: true
-  },
-  loginAttempts: {
+  rank: {
     type: DataTypes.INTEGER,
     defaultValue: 0
   },
-  lockUntil: {
+  createdAt: {
     type: DataTypes.DATE,
-    allowNull: true
+    defaultValue: DataTypes.NOW
+  },
+  updatedAt: {
+    type: DataTypes.DATE,
+    defaultValue: DataTypes.NOW
   }
 }, {
   tableName: 'users',
@@ -79,17 +64,11 @@ const User = sequelize ? sequelize.define('User', {
       }
     }
   }
-}) : null;
+});
 
-// متدهای کمکی
-if (User) {
-  User.prototype.comparePassword = async function(candidatePassword) {
-    return await bcrypt.compare(candidatePassword, this.password);
-  };
-
-  User.prototype.isLocked = function() {
-    return !!(this.lockUntil && this.lockUntil > new Date());
-  };
-}
+// متد مقایسه رمز عبور
+User.prototype.comparePassword = async function(candidatePassword) {
+  return await bcrypt.compare(candidatePassword, this.password);
+};
 
 export default User;
