@@ -1,6 +1,6 @@
 'use client';
 import { useState } from 'react';
-import { useAuth } from '../../hooks/useAuth';  // مسیر اصلاح شد
+import { useAuth } from '../../hooks/useAuth';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 
@@ -22,14 +22,26 @@ export default function RegisterPage() {
     setLoading(true);
     setError('');
 
-    const result = await register(formData);
-    
-    if (result.success) {
-      router.push('/');
-    } else {
-      setError(result.message);
+    console.log('📝 Form submitted:', formData);
+
+    try {
+      const result = await register(formData);
+      console.log('🔔 Register result:', result);
+      
+      if (result.success) {
+        console.log('✅ Redirecting to HOME...');
+        router.push('/'); // به صفحه اصلی برو، نه profile
+        router.refresh(); // صفحه را refresh کن
+      } else {
+        setError(result.message || 'خطای ناشناخته');
+      }
+    } catch (err) {
+      console.error('❌ Register error:', err);
+      setError('خطا در ارتباط با سرور');
+    } finally {
+      setLoading(false);
+      console.log('🏁 Loading finished');
     }
-    setLoading(false);
   };
 
   return (
@@ -47,6 +59,7 @@ export default function RegisterPage() {
               value={formData.username}
               onChange={(e) => setFormData({...formData, username: e.target.value})}
               required
+              autoComplete="username" // اضافه شد
             />
           </div>
 
@@ -67,19 +80,20 @@ export default function RegisterPage() {
               value={formData.email}
               onChange={(e) => setFormData({...formData, email: e.target.value})}
               required
+              autoComplete="email" // اضافه شد
             />
           </div>
 
           <div className="form-group">
             <label>رمز عبور:</label>
             <input
-  type="password"
-  value={formData.password}
-  onChange={(e) => setFormData({...formData, password: e.target.value})}
-  required
-  minLength="8"
-  autoComplete="new-password" // این خط را اضافه کنید
-/>
+              type="password"
+              value={formData.password}
+              onChange={(e) => setFormData({...formData, password: e.target.value})}
+              required
+              minLength="8"
+              autoComplete="new-password"
+            />
           </div>
 
           <button type="submit" disabled={loading}>
