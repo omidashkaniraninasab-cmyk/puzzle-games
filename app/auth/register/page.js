@@ -4,15 +4,17 @@ import { useAuth } from '../../hooks/useAuth';  // مسیر اصلاح شد
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 
-export default function LoginPage() {
+export default function RegisterPage() {
   const [formData, setFormData] = useState({
+    username: '',
     email: '',
-    password: ''
+    password: '',
+    displayName: ''
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   
-  const { login } = useAuth();
+  const { register } = useAuth();
   const router = useRouter();
 
   const handleSubmit = async (e) => {
@@ -20,7 +22,7 @@ export default function LoginPage() {
     setLoading(true);
     setError('');
 
-    const result = await login(formData);
+    const result = await register(formData);
     
     if (result.success) {
       router.push('/');
@@ -33,11 +35,31 @@ export default function LoginPage() {
   return (
     <div className="auth-container">
       <div className="auth-card">
-        <h1>ورود به پازل گیمز</h1>
+        <h1>ثبت‌نام در پازل گیمز</h1>
         
         {error && <div className="error-message">{error}</div>}
         
         <form onSubmit={handleSubmit} className="auth-form">
+          <div className="form-group">
+            <label>نام کاربری:</label>
+            <input
+              type="text"
+              value={formData.username}
+              onChange={(e) => setFormData({...formData, username: e.target.value})}
+              required
+            />
+          </div>
+
+          <div className="form-group">
+            <label>نام نمایشی:</label>
+            <input
+              type="text"
+              value={formData.displayName}
+              onChange={(e) => setFormData({...formData, displayName: e.target.value})}
+              required
+            />
+          </div>
+
           <div className="form-group">
             <label>ایمیل:</label>
             <input
@@ -55,16 +77,17 @@ export default function LoginPage() {
               value={formData.password}
               onChange={(e) => setFormData({...formData, password: e.target.value})}
               required
+              minLength="8"
             />
           </div>
 
           <button type="submit" disabled={loading}>
-            {loading ? 'در حال ورود...' : 'ورود'}
+            {loading ? 'در حال ثبت‌نام...' : 'ثبت‌نام'}
           </button>
         </form>
 
         <p className="auth-link">
-          حساب ندارید؟ <Link href="/auth/register">ثبت‌نام</Link>
+          قبلاً حساب دارید؟ <Link href="/auth/login">ورود</Link>
         </p>
       </div>
     </div>

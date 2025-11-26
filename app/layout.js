@@ -1,5 +1,5 @@
 import './globals.css'
-import { AuthProvider } from './hooks/useAuth'
+import { AuthProvider } from './hooks/useAuth'  // مسیر اصلاح شد
 
 export const metadata = {
   title: 'بازی‌های پازل',
