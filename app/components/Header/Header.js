@@ -6,14 +6,22 @@ export default function Header() {
 
   const handleLogout = async () => {
     await logout();
-    window.location.reload(); // فقط صفحه را رفرش کن
+    window.location.reload();
+  };
+
+  const handleLogin = () => {
+    window.location.href = '/auth/login';
+  };
+
+  const handleRegister = () => {
+    window.location.href = '/auth/register';
   };
 
   return (
     <header className="header">
       <div className="container">
         <div className="logo">
-          <span>پازل گیمز</span> {/* لینک به / حذف شد */}
+          <span>پازل گیمز</span>
         </div>
         
         <nav className="nav">
@@ -26,20 +34,12 @@ export default function Header() {
             </div>
           ) : (
             <div className="auth-links">
-              <span 
-                className="auth-link" 
-                onClick={() => window.showAuthModal('login')}
-                style={{cursor: 'pointer'}}
-              >
+              <button className="auth-link" onClick={handleLogin}>
                 ورود
-              </span>
-              <span 
-                className="auth-link" 
-                onClick={() => window.showAuthModal('register')}
-                style={{cursor: 'pointer'}}
-              >
+              </button>
+              <button className="auth-link" onClick={handleRegister}>
                 ثبت‌نام
-              </span>
+              </button>
             </div>
           )}
         </nav>
