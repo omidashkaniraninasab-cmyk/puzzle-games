@@ -1,5 +1,5 @@
 import { DataTypes } from 'sequelize';
-import sequelize from '../lib/database';
+import sequelize from '../lib/database.js';
 
 const UserSession = sequelize.define('UserSession', {
   id: {
@@ -16,12 +16,12 @@ const UserSession = sequelize.define('UserSession', {
     }
   },
   token: {
-    type: DataTypes.STRING,
+    type: DataTypes.STRING(500),
     allowNull: false,
     unique: true
   },
   ipAddress: {
-    type: DataTypes.STRING,
+    type: DataTypes.STRING(45), // برای IPv6
     allowNull: false
   },
   userAgent: {
@@ -39,12 +39,9 @@ const UserSession = sequelize.define('UserSession', {
 }, {
   tableName: 'user_sessions',
   indexes: [
-    {
-      fields: ['expiresAt']
-    },
-    {
-      fields: ['token']
-    }
+    { fields: ['token'] },
+    { fields: ['userId'] },
+    { fields: ['expiresAt'] }
   ]
 });
 

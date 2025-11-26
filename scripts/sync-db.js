@@ -1,23 +1,19 @@
-import { testConnection } from '../lib/database.js';
+import sequelize from '../lib/database.js';
 import '../models/index.js';
 
 async function syncDatabase() {
   try {
     console.log('🔄 Starting database sync...');
     
-    const connected = await testConnection();
-    if (!connected) {
-      console.log('❌ Database connection failed');
-      process.exit(1);
-    }
-
-    // اینجا مدل‌ها را import کردیم، حالا sync می‌کنیم
-    const { sequelize } = await import('../models/index.js');
+    // تست اتصال
+    await sequelize.authenticate();
+    console.log('✅ Database connected successfully');
     
+    // sync مدل‌ها
     await sequelize.sync({ force: false });
-    console.log('✅ All tables created successfully!');
+    console.log('✅ All tables synchronized successfully!');
     
-    console.log('🎉 Database is ready for use!');
+    console.log('🎉 Database is ready for authentication system!');
     process.exit(0);
   } catch (error) {
     console.error('❌ Database sync failed:', error);

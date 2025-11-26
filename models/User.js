@@ -1,7 +1,14 @@
 import { DataTypes } from 'sequelize';
-import sequelize from '../lib/database.js';
+import bcrypt from 'bcryptjs';
 
-const User = sequelize.define('User', {
+// تابع برای گرفتن sequelize instance
+let sequelize;
+
+export function setSequelize(seq) {
+  sequelize = seq;
+}
+
+const User = sequelize ? sequelize.define('User', {
   id: {
     type: DataTypes.UUID,
     defaultValue: DataTypes.UUIDV4,
@@ -10,31 +17,79 @@ const User = sequelize.define('User', {
   username: {
     type: DataTypes.STRING(50),
     allowNull: false,
-    unique: true
+    unique: true,
+    validate: {
+      len: [3, 50],
+      is: /^[a-zA-Z0-9_]+$/
+    }
   },
   email: {
     type: DataTypes.STRING(100),
     allowNull: false,
-    unique: true
+    unique: true,
+    validate: {
+      isEmail: true
+    }
   },
   password: {
     type: DataTypes.STRING(255),
-    allowNull: false
+    allowNull: false,
+    validate: {
+      len: [8, 100]
+    }
   },
   displayName: {
     type: DataTypes.STRING(100),
-    allowNull: false
+    allowNull: false,
+    validate: {
+      len: [2, 100]
+    }
   },
-  totalScore: {
-    type: DataTypes.BIGINT,
-    defaultValue: 0
+  avatar: {
+    type: DataTypes.STRING(255),
+    allowNull: true
   },
-  rank: {
+  isVerified: {
+    type: DataTypes.BOOLEAN,
+    defaultValue: false
+  },
+  role: {
+    type: DataTypes.ENUM('user', 'admin'),
+    defaultValue: 'user'
+  },
+  lastLogin: {
+    type: DataTypes.DATE,
+    allowNull: true
+  },
+  loginAttempts: {
     type: DataTypes.INTEGER,
     defaultValue: 0
+  },
+  lockUntil: {
+    type: DataTypes.DATE,
+    allowNull: true
   }
 }, {
-  tableName: 'users'
-});
+  tableName: 'users',
+  hooks: {
+    beforeSave: async (user) => {
+      if (user.changed('password')) {
+        const salt = await bcrypt.genSalt(12);
+        user.password = await bcrypt.hash(user.password, salt);
+      }
+    }
+  }
+}) : null;
+
+// متدهای کمکی
+if (User) {
+  User.prototype.comparePassword = async function(candidatePassword) {
+    return await bcrypt.compare(candidatePassword, this.password);
+  };
+
+  User.prototype.isLocked = function() {
+    return !!(this.lockUntil && this.lockUntil > new Date());
+  };
+}
 
 export default User;
